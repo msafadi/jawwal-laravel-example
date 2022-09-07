@@ -4,18 +4,31 @@
 
 <div class="row mt-5">
     <div class="col-md-6 offset-3">
-        <article class="blog-post">
-            <h2 class="blog-post-title mb-1">New feature</h2>
-            <p class="blog-post-meta">December 14, 2020 by <a href="#">Chris</a></p>
+        @if (!empty($status))
+        <div class="alert alert-success">
+            {{ $status }}
+        </div>
+        @endif
+        @if (!empty($message))
+        <div class="alert alert-info">
+            {{ $message }}
+            @php
+                Session::forget('message'); // session()->forget('message');
+            @endphp
+        </div>
+        @endif
 
-            <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
-            <ul>
-                <li>First list item</li>
-                <li>Second list item with a longer description</li>
-                <li>Third list item to close it out</li>
-            </ul>
-            <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+        @foreach ($posts as $post)
+        <article class="blog-post">
+            <h2 class="blog-post-title mb-1">{{ $post->first_name }} {{ $post->last_name }}</h2>
+            <p class="blog-post-meta">
+                {{ $post->created_at }}
+                | <a href="{{ route('posts.edit', $post->id) }}">Edit</a>
+            </p>
+
+            <p>{{ $post->body }}</p>
         </article>
+        @endforeach
     </div>
 </div>
 
