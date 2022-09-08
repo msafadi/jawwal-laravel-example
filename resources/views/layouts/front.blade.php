@@ -92,7 +92,19 @@
                     </a>
                     {{-- @if (Auth::check()) --}}
                     @auth
-                    <a href="#">{{ Auth::user()->email }}</a>
+                        @php
+                            $user = Auth::user();
+                            $name = ($user instanceof App\Models\Admin)
+                                ? $user->name
+                                : $user->first_name . ' ' . $user->last_name;
+
+                        @endphp
+                    <a href="#">{{ $name }}</a>
+                    <form action="{{ route('logout') }}" method="post" class="ms-2">
+                        @csrf
+                        @method('delete')
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">Logout</button>
+                    </form>
                     @else
                     <a class="btn btn-sm btn-outline-secondary" href="{{ route('login') }}">Sign In</a>
                     @endauth

@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.101.0">
-    <title>Login · {{ config('app.name') }}</title>
+    <title>Register · {{ config('app.name') }}</title>
 
     <link rel="canonical" href="{{ config('app.url') }}">
 
@@ -72,32 +72,57 @@
 <body class="text-center">
 
     <main class="form-signin w-100 m-auto">
-        <form method="post" action="{{ route('login', $guard) }}">
+        <form method="post" action="{{ route('register') }}">
             @csrf
             <img class="mb-4" src="{{ asset('assets/images/jawwal-logo-new.png') }}" height="57">
-            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <h1 class="h3 mb-3 fw-normal">Register New Account</h1>
 
             <div class="form-floating">
-                <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="text" name="first_name" value="{{ old('first_name') }}" class="form-control" id="firstname" placeholder="First Name">
+                <label for="firstname">First Name</label>
+            </div>
+            @error('first_name')
+            <p class="text-danger">{{ $message }}</p>
+            @enderror
+
+            <div class="form-floating">
+                <input type="text" name="last_name" value="{{ old('last_name') }}" class="form-control" id="lastname" placeholder="Last Name">
+                <label for="lastname">Last Name</label>
+            </div>
+            @error('last_name')
+            <p class="text-danger">{{ $message }}</p>
+            @enderror
+
+            <div class="form-floating">
+                <input type="text" name="username" value="{{ old('username') }}" class="form-control" id="username" placeholder="Username">
+                <label for="username">Username</label>
+            </div>
+            @error('username')
+            <p class="text-danger">{{ $message }}</p>
+            @enderror
+
+            <div class="form-floating">
+                <input type="email" name="email" value="{{ old('email') }}" class="form-control" id="floatingInput" placeholder="name@example.com">
                 <label for="floatingInput">Email Address</label>
             </div>
             @error('email')
             <p class="text-danger">{{ $message }}</p>
             @enderror
+            
             <div class="form-floating">
-                <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" name="password" value="{{ old('password') }}" class="form-control" id="floatingPassword" placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
             @error('password')
             <p class="text-danger">{{ $message }}</p>
             @enderror
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" name="remember" value="1"> Remember me
-                </label>
+            <div class="form-floating">
+                <input type="password" name="password_confirmation" class="form-control" id="floatingPasswordC" placeholder="Confirm Password">
+                <label for="floatingPasswordC">Confirm Password</label>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
             <p class="mt-5 mb-3 text-muted">&copy; {{ date('Y') }}</p>
         </form>
     </main>

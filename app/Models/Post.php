@@ -9,5 +9,12 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $table = 'posts';
+
+    protected $primaryKey = 'id';
+
+    public $incrementing = true; // false to disable auto_increment
+
+    public $timestamps = true; // false to disable timestamps
 
 }

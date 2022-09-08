@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class PostsController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->authorizeResource(Post::class);
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -16,13 +24,15 @@ class PostsController extends Controller
      */
     public function index()
     {
+        //$this->authorize('viewAny', Post::class);
+
         // SELECT posts.*, users.first_name, users.last_name
         // FROM posts INNER JOIN users ON users.id = posts.user_id
 
         // return Collection of "Post" Model objects
         // $posts = Post::all();
 
-        $posts = Post::select([
+        $query = Post::select([
                     'posts.*',
                     'users.first_name',
                     'users.last_name',
@@ -30,8 +40,13 @@ class PostsController extends Controller
                 ->join('users', 'users.id', '=', 'posts.user_id')
                 ->orderBy('posts.created_at', 'DESC')
                 ->orderBy('users.first_name', 'ASC')
-                ->orderBy('users.last_name', 'ASC')
-                ->get();
+                ->orderBy('users.last_name', 'ASC');
+
+        if (Auth::user() instanceof User) {
+            $query->where('user_id', '=', Auth::id());
+        }
+
+        $posts = $query->paginate(4);
         
         return view('posts.index', [
             'posts' => $posts,
@@ -47,6 +62,8 @@ class PostsController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Post::class);
+
         return view('posts.create');
     }
 
@@ -58,6 +75,8 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Post::class);
+
         $request->validate([
             'body' => 'required|string|max:500',
             'visibility' => ['in:public,friends,me'],
@@ -67,7 +86,7 @@ class PostsController extends Controller
         $post->body = $request->post('body');
         $post->status = 'published';
         $post->visibility = $request->post('visibility', 'public');
-        $post->user_id = 6;
+        $post->user_id = Auth::id(); // Auth::user()->id;
         $post->save(); // Insert into posts table
 
         Session::put('message', 'This message will not disappear!');
@@ -84,7 +103,8 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $this->authorize('view', $post);
     }
 
     /**
@@ -93,14 +113,15 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
         // SELECT * FROM posts WHERE id = $id
-        $post = Post::findOrFail($id); // return "Post" Model object
+        //$post = Post::findOrFail($id); // return "Post" Model object
         // if (!$post) {
         //     abort(404);
         //     return redirect()->route('posts.index');
         // }
+        //$this->authorize('update', $post);
 
         return view('posts.edit', [
             'post' => $post,
@@ -114,14 +135,16 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
+        //$post = Post::findOrFail($id);
+        
+        //$this->authorize('update', $post);
+
         $request->validate([
             'body' => 'required|string|max:500',
             'visibility' => ['in:public,friends,me'],
         ]);
-
-        $post = Post::findOrFail($id);
 
         $post->body = $request->post('body');
         $post->visibility = $request->post('visibility');
@@ -139,12 +162,23 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
+        //post = Post::findOrFail($id);
+
+        //$this->authorize('delete', $post);
+        
         // DELETE FROM posts WHERE id = $id
-        Post::destroy($id);
+        //Post::destroy($id);
+        $post->delete();
 
         Session::flash('status', 'Post deleted.');
         return redirect()->route('posts.index');
+    }
+
+    public function test()
+    {
+        $this->authorize('test', Post::class);
+        return 'Test';
     }
 }

@@ -8,6 +8,7 @@
             <div>
                 <h2>Edit Post</h2>
             </div>
+            @can('delete', $post)
             <div>
                 <form action="{{ route('posts.destroy', $post->id) }}" method="post">
                     @csrf
@@ -15,6 +16,7 @@
                     <button type="submit" class="btn btn-danger">Delete Post!</button>
                 </form>
             </div>
+            @endcan
         </div>
         <form action="{{ route('posts.update', $post->id) }}" method="post">
             @csrf

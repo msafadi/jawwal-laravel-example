@@ -25,12 +25,16 @@
             <h2 class="blog-post-title mb-1">{{ $post->first_name }} {{ $post->last_name }}</h2>
             <p class="blog-post-meta">
                 {{ $post->created_at }}
+                @can('update', $post)
                 | <a href="{{ route('posts.edit', $post->id) }}">Edit</a>
+                @endcan
             </p>
 
             <p>{{ $post->body }}</p>
         </article>
         @endforeach
+
+        {{ $posts->links() }}
     </div>
 </div>
 

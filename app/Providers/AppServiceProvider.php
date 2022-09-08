@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Get a value from the service container
         // echo $this->app->make('jawwal');
+
+        Paginator::useBootstrapFive();
     }
 }
