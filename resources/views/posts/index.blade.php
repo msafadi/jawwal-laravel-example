@@ -1,5 +1,7 @@
 @extends('layouts.front')
 
+@section('title', 'Latest Posts')
+
 @section('content')
 
 <div class="row mt-5">

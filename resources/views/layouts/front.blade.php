@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.101.0">
-    <title>{{ config('app.name') }}</title>
+    <title>@yield('title') - {{ config('app.name') }}</title>
 
     <link rel="canonical" href="{{ config('app.url') }}">
 
@@ -80,7 +80,7 @@
                     <a class="link-secondary" href="{{ route('posts.create') }}">Create Post</a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="blog-header-logo text-dark" href="#">{{ config('app.name') }}</a>
+                    <a class="blog-header-logo text-dark" href="{{ route('home') }}">{{ config('app.name') }}</a>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
                     <a class="link-secondary" href="#" aria-label="Search">
@@ -90,7 +90,12 @@
                             <path d="M21 21l-5.2-5.2" />
                         </svg>
                     </a>
-                    <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+                    {{-- @if (Auth::check()) --}}
+                    @auth
+                    <a href="#">{{ Auth::user()->email }}</a>
+                    @else
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('login') }}">Sign In</a>
+                    @endauth
                 </div>
             </div>
         </header>
@@ -120,6 +125,7 @@
     <footer class="blog-footer">
         <p>Copyrights {{ date('Y') }} &copy; All rights reserved. {{ config('app.name') }}.</p>
         <p><a href="#">Back to top</a></p>
+        @yield('footer')
     </footer>
 
 </body>
